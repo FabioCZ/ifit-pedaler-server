@@ -1,0 +1,64 @@
+<html>
+	<head>
+		<title>iFit Pedaler</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script type="text/javascript">
+			window.onload = onLoad
+			function onLoad(){
+				$("#submit").click (function() { onSubmit ()})
+				$("#stop").click (function() { onStop ()})
+			}
+			function onSubmit(){
+				let bcmValue = getBcmPinValue()
+				let rpmValue = getRpmValue()
+				history.pushState(null,"","?bcmPin=" + bcmValue + "&rpm=" + rpmValue)
+				$("#status").html("")
+				$.ajax({
+					url: "set",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({ bcmPin : bcmValue, rpm: rpmValue }),
+					dataType: "json",
+					success: function (result){
+						$("#status").html(" Set and running!")
+					},
+					error:function(err){
+						$("#status").html(" Error :(")
+					}
+				})
+			}
+
+			function onStop(){
+				$.ajax({
+					url: "stop",
+					type: "POST",
+					success: function (result){
+						$("#status").html(" Stopped!")
+					},
+					error:function(err){
+						$("#status").html(" Error :(")
+					}
+				})
+			}
+
+			function getBcmPinValue(){
+				return $("#bcmPin").val()
+			}
+
+			function getRpmValue(){
+				return $("#rpm").val()
+			}
+		</script>
+	</head>
+	<body>
+		<h1>iFit Pedaler</h1>
+		  BCM pin: <input type="text" id="bcmPin" value="{{bcmPin}}"><br>
+		  RPM (int only): <input type="text" id="rpm" value="{{rpm}}"><br>
+		  <!-- On Time: <input type="text" name="lname"><br> -->
+		  <button id="submit">Pedal!</button><span id="status"></span><br>
+		  <button id="stop">Stop</button>
+		  <br>
+		  <br>
+		  <a href="https://pinout.xyz/">Guide to Raspberry PI pins</a>
+	</body>
+</html>
