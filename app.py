@@ -68,6 +68,3 @@ def stop():
 	pedalThread = None
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
-
-
-
