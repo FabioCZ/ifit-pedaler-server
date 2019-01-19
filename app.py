@@ -6,7 +6,7 @@ from time import sleep
 import math
 import json
 import os
-os.environ['GPIOZERO_PIN_FACTORY'] = os.environ.get('GPIOZERO_PIN_FACTORY', 'mock')
+#os.environ['GPIOZERO_PIN_FACTORY'] = os.environ.get('GPIOZERO_PIN_FACTORY', 'mock') # uncomment for dev on a non-pi machine
 import gpiozero
 
 app = Flask(__name__)
@@ -41,7 +41,7 @@ def rpmToSecDelay():
 
 @app.route('/')
 def homePage():
-	bcmPin = request.args.get('bcmPin', 17)
+	bcmPin = request.args.get('bcmPin', 21)
 	rpm = request.args.get('rpm', 45)
 	return render_template('index.html', bcmPin=bcmPin, rpm=rpm)
 
@@ -50,10 +50,13 @@ def set():
 	global pedalThread
 	global bcmPin
 	global rpm
+	global keepRunning
+
 	reqData = request.get_json (force=True)
 	bcmPin = int(reqData['bcmPin'])
 	rpm = int(reqData['rpm'])
 
+	keepRunning = True
 	if pedalThread is None:
 		pedalThread = Thread(target = runPedalLoop)
 		pedalThread.start()

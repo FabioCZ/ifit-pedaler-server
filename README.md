@@ -17,6 +17,8 @@ sudo reboot
 
 
 # Usage
+* Run `sudo run.sh` on your pi (if you don't want to run sudo, changing your port in `run.sh` should do it)
+* On your dev machine, point your browser to your Pi's local IP, e.g. `http://192.168.1.22`
 * Enter in the BCM pin number that your wire is connected to
 * Enter in (approximate) RPMs
 * Press "Pedal!" to start pedaling
