@@ -71,3 +71,11 @@ def stop():
 	pedalThread = None
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
+@app.route('/status', methods=['GET'])
+def status():
+	global keepRunning
+	global rpm
+	global bcmPin
+
+	return json.dumps({'isRunning':keepRunning,'rpm':rpm,'bcmPin':bcmPin}), 200, {'ContentType':'application/json'} 
+
