@@ -77,5 +77,5 @@ def status():
 	global rpm
 	global bcmPin
 
-	return json.dumps({'isRunning':keepRunning,'rpm':rpm,'bcmPin':bcmPin}), 200, {'ContentType':'application/json'} 
+	return json.dumps({'isRunning':keepRunning and pedalThread is not None,'rpm':rpm,'bcmPin':bcmPin}), 200, {'ContentType':'application/json'} 
 
