@@ -18,6 +18,9 @@ import kotlinx.coroutines.launch
 import org.jetbrains.anko.sdk27.coroutines.onClick
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.shawnlin.numberpicker.NumberPicker
+import com.shawnlin.numberpicker.NumberPicker.OnScrollListener.SCROLL_STATE_IDLE
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,7 +41,9 @@ class MainActivity : AppCompatActivity() {
         val prefs = getPrefs()
         ipTextView.setText(prefs.first)
         bcmPinText.setText(prefs.second.toString())
-
+        val listener = PickerListener()
+        rpmPicker.setOnValueChangedListener (listener)
+        rpmPicker.setOnScrollListener(listener)
     }
 
     override fun onResume() {
@@ -56,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error ${response.errorBody().toString()}", Toast.LENGTH_LONG).show()
                 return
             }
-            val running = response.body()!!.isRunning;
+            val running = response.body()!!.isRunning
             setButtonWheenState(running)
             if (running) {
                 bcmPinText.setText(response.body()!!.bcmPin.toString())
@@ -68,6 +73,16 @@ class MainActivity : AppCompatActivity() {
         } finally {
             startButton.isEnabled = true
 
+        }
+    }
+
+    private suspend fun onRpmChanged() {
+        if (!isRunning) return
+        rpmPicker.isEnabled = false
+        try {
+            start()
+        } finally {
+            rpmPicker.isEnabled = true
         }
     }
 
@@ -160,5 +175,21 @@ class MainActivity : AppCompatActivity() {
     private fun openPinGuide(){
         val url = "https://pinout.xyz/"
         CustomTabsIntent.Builder().build().launchUrl(this, Uri.parse(url))
+    }
+
+    private inner class PickerListener : NumberPicker.OnScrollListener, NumberPicker.OnValueChangeListener {
+        private var scrollState = 0
+        override fun onScrollStateChange(view: NumberPicker, scrollState: Int) {
+            this.scrollState = scrollState
+            if (scrollState == SCROLL_STATE_IDLE) {
+                GlobalScope.launch(Dispatchers.Main) { onRpmChanged() }
+            }
+        }
+
+        override fun onValueChange(picker: NumberPicker, oldVal: Int, newVal: Int) {
+            if (scrollState == 0) {
+                GlobalScope.launch(Dispatchers.Main) { onRpmChanged() }
+            }
+        }
     }
 }
