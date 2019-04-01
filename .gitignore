@@ -102,3 +102,18 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+/Pedal4Me/.iml
+/Pedal4Me/.gradle
+/Pedal4Me/local.properties
+/Pedal4Me/.idea/caches
+/Pedal4Me/.idea/libraries
+/Pedal4Me/.idea/modules.xml
+/Pedal4Me/.idea/workspace.xml
+/Pedal4Me/.idea/navEditor.xml
+/Pedal4Me/.idea/assetWizardSettings.xml
+/Pedal4Me/.DS_Store
+/Pedal4Me/build
+/Pedal4Me/captures
+/Pedal4Me/.externalNativeBuild
+
